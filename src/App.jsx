@@ -1,5 +1,6 @@
 import React from 'react'
-import Search from './components/Search.jsx';
+import Search from './components/search'
+
  
 const App = () => {
   return (
@@ -14,7 +15,6 @@ const App = () => {
         </header>
         
           <Search/>
-  
       </div>
   </main>
   )
