@@ -1,5 +1,6 @@
 import React from 'react'
-
+import Search from './components/Search.jsx';
+ 
 const App = () => {
   return (
     <main>
@@ -7,8 +8,13 @@ const App = () => {
 
       <div className="wrapper">
         <header>
-          <h1>Find Movies You will Enjoy Without The Hassle</h1>
+
+          <img src="./hero.png" alt="Hero Banner"/>
+          <h1>Find <span className='text-gradient'>Movies</span> You will Enjoy Without The Hassle</h1>
         </header>
+        
+          <Search/>
+  
       </div>
   </main>
   )
