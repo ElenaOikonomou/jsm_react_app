@@ -1,5 +1,6 @@
 import {React, useState, useEffect} from 'react'
 import Search from './components/search'
+import Spinner from './components/Spinner';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 
@@ -20,18 +21,42 @@ const API_OPTIONS = {
 const App = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
+  const [movieList, setMovieList] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const fetchMovies = async () => {
+    setIsLoading(true)
     try{
+      const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}`;
+      const response = await fetch(endpoint, API_OPTIONS)
+
+      if(!response.ok){
+        throw new Error("Failed to fetch movies");
+      }
+
+      const data = await response.json()
+      if(data.response === "false"){
+        setErrorMessage(data.errorMessage || "Failed to fetch movies");
+        setMovieList([])  
+        return; //exit the function   
+
+      }
+
+      setMovieList(data.results || [])
 
     }catch(err){
       console.error('Error fetching movies:', err);
       setErrorMessage('Failed to fetch movies. Please try again later.');
   
+  } finally{
+    setIsLoading(false)
+  
   }
 }
 
-  useEffect(() => {},
+  useEffect(() => {
+    fetchMovies()
+  },
   [])
 
 
@@ -49,7 +74,23 @@ const App = () => {
         </header>
 
         <section className="all_movies">
-        <h2>Movies</h2></section>
+        <h2>All Movies</h2>
+        {isLoading?(
+          <p><Spinner/></p>):errorMessage?(
+            <p className="text-red-500">{errorMessage}</p>
+          ):(
+            <ul>
+             {movieList.map(movie => (
+               <li key={movie.id}>
+                 <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
+                 <h3 className='text-white'>{movie.title}</h3>
+               </li>
+             ))}
+            </ul>
+          )
+        }
+        
+        </section>
         {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
         
           
